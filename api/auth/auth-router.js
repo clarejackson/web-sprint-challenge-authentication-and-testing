@@ -90,6 +90,44 @@ router.post('/login', async (req, res, next) => {
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
+ try {
+  const { username, password } = req.body
+
+  if (!username || !password){
+    return res.status(409).json({
+      message: "username and password required",
+    })
+  }
+
+  const user = await users.findByUsername(username)
+ 
+  if (!user){
+   return res.status(409).json({
+     message: "invalid credentials"
+   })
+ }
+
+  const passwordValid = await bcrypt.compare(password, user.password)
+
+  if (!passwordValid) {
+    return res.status(401).json({
+      message: "invalid Credentials",
+    })
+  }
+
+  const token = jwt.sign({
+    username: user.username,
+  }, JWT_SECRET)
+
+  res.cookie("token", token)
+  res.status(200).json({
+    message: `Welcome, ${user.username}`,
+    token: token,
+  })
+
+ } catch (err) {
+   next(err)
+ }
 });
 
 module.exports = router;
