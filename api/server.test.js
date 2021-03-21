@@ -3,7 +3,7 @@ const supertest = require('supertest');
 const server = require('./server');
 
 test('sanity', () => {
-  expect(true).toBe(false)
+  expect(true).not.toBe(false)
 })
 
 describe("users integration tests", () => {
@@ -29,7 +29,7 @@ describe("users integration tests", () => {
      })
      expect(res.statusCode).toBe(409)
      expect(res.body.message).toBe("username and password required")
-     
+
    })
   })
 })
