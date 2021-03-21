@@ -32,5 +32,24 @@ describe("users integration tests", () => {
 
    })
   })
+  describe("/api/auth/login", () => {
+    it("user can login", async () => {
+      await supertest(server)
+      .post("/api/auth/register")
+      .send({
+        username: "clare",
+        password: "jackson"
+      })
+      const res = await supertest(server)
+      .post("/api/auth/login")
+      .send({
+        username: "clare",
+        password: "jackson"
+      })
+      expect(res.statusCode).toBe(200)
+      expect(res.type).toBe("application/json")
+      expect(res.body.message).toBe("Welcome, clare")
+    })
+  })
 })
 
